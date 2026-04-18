@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fresh Cuts — Barber App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: #f0eee9; height: 100%; overflow: hidden; }
+  * { box-sizing: border-box; }
+  button { font-family: inherit; }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+
+// ─────────────────────────────────────────────────────────────
+// iOS Frame
+// ─────────────────────────────────────────────────────────────
+function IOSStatusBar({ dark = false, time = '9:41' }) {
+  const c = dark ? '#fff' : '#000';
+  return (
+    <div style={{
+      display: 'flex', gap: 154, alignItems: 'center', justifyContent: 'center',
+      padding: '21px 24px 19px', boxSizing: 'border-box',
+      position: 'relative', zIndex: 20, width: '100%',
+    }}>
+      <div style={{ flex: 1, height: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', paddingTop: 1.5 }}>
+        <span style={{ fontFamily: '-apple-system, "SF Pro", system-ui', fontWeight: 590, fontSize: 17, lineHeight: '22px', color: c }}>{time}</span>
+      </div>
+      <div style={{ flex: 1, height: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, paddingTop: 1, paddingRight: 1 }}>
+        <svg width="19" height="12" viewBox="0 0 19 12">
+          <rect x="0" y="7.5" width="3.2" height="4.5" rx="0.7" fill={c}/>
+          <rect x="4.8" y="5" width="3.2" height="7" rx="0.7" fill={c}/>
+          <rect x="9.6" y="2.5" width="3.2" height="9.5" rx="0.7" fill={c}/>
+          <rect x="14.4" y="0" width="3.2" height="12" rx="0.7" fill={c}/>
+        </svg>
+        <svg width="17" height="12" viewBox="0 0 17 12">
+          <path d="M8.5 3.2C10.8 3.2 12.9 4.1 14.4 5.6L15.5 4.5C13.7 2.7 11.2 1.5 8.5 1.5C5.8 1.5 3.3 2.7 1.5 4.5L2.6 5.6C4.1 4.1 6.2 3.2 8.5 3.2Z" fill={c}/>
+          <path d="M8.5 6.8C9.9 6.8 11.1 7.3 12 8.2L13.1 7.1C11.8 5.9 10.2 5.1 8.5 5.1C6.8 5.1 5.2 5.9 3.9 7.1L5 8.2C5.9 7.3 7.1 6.8 8.5 6.8Z" fill={c}/>
+          <circle cx="8.5" cy="10.5" r="1.5" fill={c}/>
+        </svg>
+        <svg width="27" height="13" viewBox="0 0 27 13">
+          <rect x="0.5" y="0.5" width="23" height="12" rx="3.5" stroke={c} strokeOpacity="0.35" fill="none"/>
+          <rect x="2" y="2" width="20" height="9" rx="2" fill={c}/>
+          <path d="M25 4.5V8.5C25.8 8.2 26.5 7.2 26.5 6.5C26.5 5.8 25.8 4.8 25 4.5Z" fill={c} fillOpacity="0.4"/>
+        </svg>
+      </div>
+    </div>
+  );
+}
+
+function IOSDevice({ children, width = 402, height = 874, dark = false }) {
+  return (
+    <div style={{
+      width, height, borderRadius: 48, overflow: 'hidden',
+      position: 'relative', background: dark ? '#000' : '#F2F2F7',
+      boxShadow: '0 40px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.12)',
+      fontFamily: '-apple-system, system-ui, sans-serif',
+      WebkitFontSmoothing: 'antialiased',
+    }}>
+      <div style={{ position: 'absolute', top: 11, left: '50%', transform: 'translateX(-50%)', width: 126, height: 37, borderRadius: 24, background: '#000', zIndex: 50 }} />
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 }}>
+        <IOSStatusBar dark={dark} />
+      </div>
+      <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ flex: 1, overflow: 'auto' }}>{children}</div>
+      </div>
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 60, height: 34, display: 'flex', justifyContent: 'center', alignItems: 'flex-end', paddingBottom: 8, pointerEvents: 'none' }}>
+        <div style={{ width: 139, height: 5, borderRadius: 100, background: dark ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.25)' }} />
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Android Frame
+// ─────────────────────────────────────────────────────────────
+const MD_C = {
+  surface: '#f4fbf8', surfaceVariant: '#dae5e1', inverseOnSurface: '#ecf2ef',
+  secondaryContainer: '#cde8e1', primaryFixedDim: '#83d5c6',
+  onSurface: '#171d1b', onSurfaceVar: '#49454f', onPrimaryContainer: '#00201c',
+  primary: '#006a60', frameBorder: 'rgba(116,119,117,0.5)',
+};
+
+function AndroidStatusBar({ dark = false }) {
+  const c = dark ? '#fff' : MD_C.onSurface;
+  return (
+    <div style={{ height: 40, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 16px', position: 'relative', fontFamily: 'Roboto, system-ui, sans-serif' }}>
+      <span style={{ fontSize: 14, fontWeight: 400, letterSpacing: 0.25, color: c }}>9:30</span>
+      <div style={{ position: 'absolute', left: '50%', top: 8, transform: 'translateX(-50%)', width: 24, height: 24, borderRadius: 100, background: '#2e2e2e' }} />
+      <svg width="27" height="13" viewBox="0 0 27 13">
+        <rect x="0.5" y="0.5" width="23" height="12" rx="3.5" stroke={c} strokeOpacity="0.35" fill="none"/>
+        <rect x="2" y="2" width="20" height="9" rx="2" fill={c}/>
+      </svg>
+    </div>
+  );
+}
+
+function AndroidNavBar({ dark = false }) {
+  return (
+    <div style={{ height: 24, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ width: 108, height: 4, borderRadius: 2, background: dark ? '#fff' : MD_C.onSurface, opacity: 0.4 }} />
+    </div>
+  );
+}
+
+function AndroidDevice({ children, width = 390, height = 844, dark = false }) {
+  return (
+    <div style={{ width, height, borderRadius: 18, overflow: 'hidden', background: dark ? '#1d1b20' : MD_C.surface, border: `8px solid ${MD_C.frameBorder}`, boxShadow: '0 30px 80px rgba(0,0,0,0.25)', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' }}>
+      <AndroidStatusBar dark={dark} />
+      <div style={{ flex: 1, overflow: 'auto' }}>{children}</div>
+      <AndroidNavBar dark={dark} />
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Design Canvas
+// ─────────────────────────────────────────────────────────────
+const DC = {
+  bg: '#f0eee9', grid: 'rgba(0,0,0,0.06)', label: 'rgba(60,50,40,0.7)',
+  title: 'rgba(40,30,20,0.85)', subtitle: 'rgba(60,50,40,0.6)',
+  font: '-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif',
+};
+
+function DesignCanvas({ children }) {
+  const vpRef = React.useRef(null);
+  const worldRef = React.useRef(null);
+  const tf = React.useRef({ x: 0, y: 0, scale: 1 });
+  const apply = React.useCallback(() => {
+    const { x, y, scale } = tf.current;
+    const el = worldRef.current;
+    if (el) el.style.transform = `translate3d(${x}px,${y}px,0) scale(${scale})`;
+  }, []);
+  React.useEffect(() => {
+    const vp = vpRef.current;
+    if (!vp) return;
+    const zoomAt = (cx, cy, factor) => {
+      const r = vp.getBoundingClientRect();
+      const px = cx - r.left, py = cy - r.top;
+      const t = tf.current;
+      const next = Math.min(8, Math.max(0.1, t.scale * factor));
+      const k = next / t.scale;
+      t.x = px - (px - t.x) * k; t.y = py - (py - t.y) * k; t.scale = next; apply();
+    };
+    let isGesturing = false, gsBase = 1;
+    const onWheel = (e) => {
+      e.preventDefault();
+      if (isGesturing) return;
+      if (e.ctrlKey) { zoomAt(e.clientX, e.clientY, Math.exp(-e.deltaY * 0.01)); }
+      else if (e.deltaMode !== 0 || (e.deltaX === 0 && Number.isInteger(e.deltaY) && Math.abs(e.deltaY) >= 40)) { zoomAt(e.clientX, e.clientY, Math.exp(-Math.sign(e.deltaY) * 0.18)); }
+      else { tf.current.x -= e.deltaX; tf.current.y -= e.deltaY; apply(); }
+    };
+    const onGS = (e) => { e.preventDefault(); isGesturing = true; gsBase = tf.current.scale; };
+    const onGC = (e) => { e.preventDefault(); zoomAt(e.clientX, e.clientY, (gsBase * e.scale) / tf.current.scale); };
+    const onGE = (e) => { e.preventDefault(); isGesturing = false; };
+    let drag = null;
+    const onPD = (e) => {
+      const onBg = e.target === vp || e.target === worldRef.current;
+      if (!(e.button === 1 || (e.button === 0 && onBg))) return;
+      e.preventDefault(); vp.setPointerCapture(e.pointerId);
+      drag = { id: e.pointerId, lx: e.clientX, ly: e.clientY }; vp.style.cursor = 'grabbing';
+    };
+    const onPM = (e) => {
+      if (!drag || e.pointerId !== drag.id) return;
+      tf.current.x += e.clientX - drag.lx; tf.current.y += e.clientY - drag.ly;
+      drag.lx = e.clientX; drag.ly = e.clientY; apply();
+    };
+    const onPU = (e) => { if (!drag || e.pointerId !== drag.id) return; vp.releasePointerCapture(e.pointerId); drag = null; vp.style.cursor = ''; };
+    vp.addEventListener('wheel', onWheel, { passive: false });
+    vp.addEventListener('gesturestart', onGS, { passive: false });
+    vp.addEventListener('gesturechange', onGC, { passive: false });
+    vp.addEventListener('gestureend', onGE, { passive: false });
+    vp.addEventListener('pointerdown', onPD);
+    vp.addEventListener('pointermove', onPM);
+    vp.addEventListener('pointerup', onPU);
+    vp.addEventListener('pointercancel', onPU);
+    return () => {
+      vp.removeEventListener('wheel', onWheel);
+      vp.removeEventListener('gesturestart', onGS);
+      vp.removeEventListener('gesturechange', onGC);
+      vp.removeEventListener('gestureend', onGE);
+      vp.removeEventListener('pointerdown', onPD);
+      vp.removeEventListener('pointermove', onPM);
+      vp.removeEventListener('pointerup', onPU);
+      vp.removeEventListener('pointercancel', onPU);
+    };
+  }, [apply]);
+  const gridSvg = `url("data:image/svg+xml,%3Csvg width='120' height='120' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M120 0H0v120' fill='none' stroke='${encodeURIComponent(DC.grid)}' stroke-width='1'/%3E%3C/svg%3E")`;
+  return (
+    <div ref={vpRef} style={{ height: '100vh', width: '100vw', background: DC.bg, overflow: 'hidden', overscrollBehavior: 'none', touchAction: 'none', position: 'relative', fontFamily: DC.font }}>
+      <div ref={worldRef} style={{ position: 'absolute', top: 0, left: 0, transformOrigin: '0 0', willChange: 'transform', width: 'max-content', minWidth: '100%', minHeight: '100%', padding: '60px 0 80px', backgroundImage: gridSvg, backgroundSize: '120px 120px' }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function DCSection({ title, subtitle, children, gap = 48 }) {
+  return (
+    <div style={{ marginBottom: 80, position: 'relative' }}>
+      <div style={{ padding: '0 60px 36px' }}>
+        <div style={{ fontSize: 22, fontWeight: 600, color: DC.title, letterSpacing: -0.3, marginBottom: 4 }}>{title}</div>
+        {subtitle && <div style={{ fontSize: 14, fontWeight: 400, color: DC.subtitle }}>{subtitle}</div>}
+      </div>
+      <div style={{ display: 'flex', gap, padding: '0 60px', alignItems: 'flex-start', width: 'max-content' }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function DCArtboard({ label, children, width, height, style = {} }) {
+  return (
+    <div style={{ position: 'relative', flexShrink: 0 }}>
+      {label && <div style={{ position: 'absolute', bottom: '100%', left: 0, paddingBottom: 8, fontSize: 12, fontWeight: 500, color: DC.label, whiteSpace: 'nowrap' }}>{label}</div>}
+      <div style={{ borderRadius: 2, boxShadow: '0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06)', overflow: 'hidden', width, height, background: '#fff', ...style }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Design Tokens + Data
+// ─────────────────────────────────────────────────────────────
+const FC = {
+  black: '#1A1A1A', bg: '#FAFAF8', bgAlt: '#F3F1ED', bgCard: '#FFFFFF',
+  gold: '#B8964E', goldLight: '#CBB07A', goldDark: '#96783C',
+  cream: '#F5F0EB', text: '#1A1A1A', textSecondary: '#5A5A5A', textMuted: '#8A8A8A',
+  border: 'rgba(0,0,0,0.08)', borderStrong: 'rgba(0,0,0,0.12)',
+  green: '#27AE60', red: '#D63031',
+  fontDisplay: "'Playfair Display', Georgia, serif",
+  fontBody: "'DM Sans', -apple-system, sans-serif",
+};
+
+const BARBER = {
+  name: 'Marcus Reed', handle: '@marcuscuts', title: 'Master Barber',
+  yearsAt: 6, rating: 4.9, reviews: 412,
+  bio: 'Specializing in skin fades, beard sculpting, and classic cuts. Trained in Brooklyn, sharpening blades in North Philly since 2019.',
+  hours: [
+    ['Mon','9:00 AM – 7:00 PM'],['Tue','9:00 AM – 7:00 PM'],['Wed','Off'],
+    ['Thu','9:00 AM – 8:00 PM'],['Fri','9:00 AM – 8:00 PM'],
+    ['Sat','8:00 AM – 6:00 PM'],['Sun','10:00 AM – 4:00 PM'],
+  ],
+  services: [
+    { name: 'Signature Cut', price: 45, mins: 45 },
+    { name: 'Skin Fade', price: 50, mins: 45 },
+    { name: 'Beard Sculpt', price: 25, mins: 20 },
+    { name: 'Cut + Beard', price: 65, mins: 60 },
+    { name: 'Hot Towel Shave', price: 40, mins: 30 },
+    { name: 'The Full Service', price: 95, mins: 90 },
+  ],
+};
+
+const TODAY = [
+  { id:1, time:'9:00 AM', client:'Andre J.', service:'Signature Cut', price:45, mins:45, status:'done', tip:10, returning:true, note:'' },
+  { id:2, time:'10:00 AM', client:'Devon K.', service:'Cut + Beard', price:65, mins:60, status:'done', tip:15, returning:true, note:'Low fade, keep top long' },
+  { id:3, time:'11:15 AM', client:'Mike T.', service:'Skin Fade', price:50, mins:45, status:'done', tip:12, returning:false, note:'First visit' },
+  { id:4, time:'12:30 PM', client:'Jamal R.', service:'The Full Service', price:95, mins:90, status:'in-progress', tip:0, returning:true, note:'Hot towel, line up clean' },
+  { id:5, time:'2:15 PM', client:'Tyrell B.', service:'Beard Sculpt', price:25, mins:20, status:'upcoming', tip:0, returning:true, note:'' },
+  { id:6, time:'3:00 PM', client:'Kareem S.', service:'Signature Cut', price:45, mins:45, status:'upcoming', tip:0, returning:true, note:'Same as last time' },
+  { id:7, time:'4:00 PM', client:'Eli W.', service:'Cut + Beard', price:65, mins:60, status:'upcoming', tip:0, returning:false, note:'' },
+  { id:8, time:'5:15 PM', client:'Andre J.', service:'Hot Towel Shave', price:40, mins:30, status:'upcoming', tip:0, returning:true, note:'' },
+];
+
+const EARNINGS = {
+  today: { service: 240, tips: 37, cuts: 4, goal: 400 },
+  week: 1840, month: 7420,
+  weekTrend: [320,410,0,380,277,290,163],
+  weekDays: ['M','T','W','T','F','S','S'],
+};
+
+// ─────────────────────────────────────────────────────────────
+// Primitives
+// ─────────────────────────────────────────────────────────────
+function Avatar({ name, size = 36, gold = false }) {
+  const initials = name.split(' ').map(n => n[0]).slice(0,2).join('');
+  return (
+    <div style={{ width: size, height: size, borderRadius: '50%', flexShrink: 0, background: gold ? `linear-gradient(135deg,${FC.goldLight},${FC.goldDark})` : '#E8E2D9', color: gold ? '#fff' : FC.black, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: FC.fontDisplay, fontWeight: 600, fontSize: size*0.38, letterSpacing: '0.5px', border: gold ? 'none' : `1px solid ${FC.border}` }}>{initials}</div>
+  );
+}
+
+function Logo({ color = FC.black, size = 16 }) {
+  return <div style={{ fontFamily: FC.fontDisplay, fontWeight: 700, fontSize: size, letterSpacing: '-0.3px', color }}>Fresh Cuts <span style={{ color: FC.gold, fontStyle: 'italic' }}>Studio</span></div>;
+}
+
+function GoldDivider({ width = 40 }) {
+  return <div style={{ width, height: 1, background: FC.gold, margin: '8px 0' }} />;
+}
+
+function Tag({ children, color = FC.gold, bg }) {
+  return <span style={{ fontFamily: FC.fontBody, fontSize: 9.5, fontWeight: 600, letterSpacing: '1.2px', textTransform: 'uppercase', color, padding: '3px 8px', background: bg || `${color}14`, borderRadius: 999, border: `0.5px solid ${color}30`, display: 'inline-block', lineHeight: 1.2 }}>{children}</span>;
+}
+
+function StatusDot({ status }) {
+  const map = { done: FC.green, 'in-progress': FC.gold, upcoming: FC.textMuted };
+  const c = map[status] || FC.textMuted;
+  return <div style={{ width: 6, height: 6, borderRadius: '50%', background: c, boxShadow: status === 'in-progress' ? `0 0 0 4px ${c}25` : 'none', flexShrink: 0 }} />;
+}
+
+function ImgPlaceholder({ width, height, label, dark = false, radius = 0 }) {
+  const c1 = dark ? '#262625' : FC.cream;
+  const c2 = dark ? '#1f1f1e' : '#EBE4DC';
+  return <div style={{ width, height, borderRadius: radius, overflow: 'hidden', background: `repeating-linear-gradient(45deg,${c1} 0 8px,${c2} 8px 16px)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'ui-monospace,"SF Mono",Menlo,monospace', fontSize: 9, letterSpacing: '0.5px', color: dark ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.4)', textTransform: 'uppercase' }}>{label}</div>;
+}
+
+function TabBar({ active, onSelect }) {
+  const tabs = [
+    { id:'schedule', label:'Today', icon:(c) => <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="15" rx="2" stroke={c} strokeWidth="1.6"/><path d="M3.5 9h17" stroke={c} strokeWidth="1.6"/><path d="M8 3.5v3M16 3.5v3" stroke={c} strokeWidth="1.6" strokeLinecap="round"/></svg> },
+    { id:'earnings', label:'Earnings', icon:(c) => <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 18l5-6 4 4 7-9" stroke={c} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/><path d="M15 7h5v5" stroke={c} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg> },
+    { id:'availability', label:'Hours', icon:(c) => <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke={c} strokeWidth="1.6"/><path d="M12 7.5V12l3 2" stroke={c} strokeWidth="1.6" strokeLinecap="round"/></svg> },
+    { id:'profile', label:'Profile', icon:(c) => <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="3.5" stroke={c} strokeWidth="1.6"/><path d="M5 19c1.5-3.5 4-5 7-5s5.5 1.5 7 5" stroke={c} strokeWidth="1.6" strokeLinecap="round"/></svg> },
+  ];
+  return (
+    <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'rgba(250,250,248,0.92)', backdropFilter: 'blur(20px) saturate(180%)', WebkitBackdropFilter: 'blur(20px) saturate(180%)', borderTop: `0.5px solid ${FC.border}`, padding: '8px 8px 28px', display: 'flex', justifyContent: 'space-around', zIndex: 30 }}>
+      {tabs.map(t => {
+        const isActive = active === t.id;
+        const c = isActive ? FC.gold : FC.textMuted;
+        return (
+          <button key={t.id} onClick={() => onSelect && onSelect(t.id)} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, padding: '6px 0', background: 'none', border: 'none', cursor: 'pointer' }}>
+            {t.icon(c)}
+            <div style={{ fontFamily: FC.fontBody, fontSize: 10, fontWeight: isActive ? 600 : 500, color: c, letterSpacing: '0.3px' }}>{t.label}</div>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Lock Screen
+// ─────────────────────────────────────────────────────────────
+function LockScreen({ onUnlock }) {
+  return (
+    <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 30% 20%,rgba(184,150,78,0.18),transparent 60%),radial-gradient(ellipse at 80% 90%,rgba(40,30,20,0.85),transparent 60%),linear-gradient(180deg,#1a1410 0%,#0a0806 100%)', overflow: 'hidden', display: 'flex', flexDirection: 'column', color: '#fff' }}>
+      <div style={{ position: 'absolute', top: 0, bottom: 0, right: 18, width: 2, background: `repeating-linear-gradient(180deg,${FC.gold} 0 14px,transparent 14px 28px)`, opacity: 0.25 }} />
+      <div style={{ height: 60 }} />
+      <div style={{ textAlign: 'center', marginTop: 28, marginBottom: 24 }}>
+        <div style={{ fontFamily: FC.fontBody, fontSize: 13, fontWeight: 500, letterSpacing: '2px', color: 'rgba(255,255,255,0.7)', textTransform: 'uppercase', marginBottom: 8 }}>Saturday, April 18</div>
+        <div style={{ fontFamily: FC.fontDisplay, fontSize: 86, fontWeight: 400, letterSpacing: '-3px', lineHeight: 1, color: '#fff' }}>2:09</div>
+      </div>
+      <div style={{ flex: 1, padding: '0 12px', display: 'flex', flexDirection: 'column', gap: 8, justifyContent: 'flex-end', paddingBottom: 130 }}>
+        <div style={{ background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(20px) saturate(180%)', WebkitBackdropFilter: 'blur(20px) saturate(180%)', borderRadius: 18, padding: '11px 14px', display: 'flex', alignItems: 'center', gap: 10, opacity: 0.6, transform: 'scale(0.95)', transformOrigin: 'center bottom' }}>
+          <div style={{ width: 22, height: 22, borderRadius: 5, background: FC.green, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700 }}>$</div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontFamily: FC.fontBody, fontSize: 12, fontWeight: 600, color: '#fff' }}>Cash App</div>
+            <div style={{ fontFamily: FC.fontBody, fontSize: 11.5, color: 'rgba(255,255,255,0.7)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Mike T. sent you $62.00</div>
+          </div>
+          <div style={{ fontFamily: FC.fontBody, fontSize: 10.5, color: 'rgba(255,255,255,0.5)' }}>1h ago</div>
+        </div>
+        <div onClick={onUnlock} style={{ background: 'rgba(255,255,255,0.18)', backdropFilter: 'blur(30px) saturate(200%)', WebkitBackdropFilter: 'blur(30px) saturate(200%)', borderRadius: 20, border: `0.5px solid rgba(184,150,78,0.4)`, boxShadow: `0 8px 24px rgba(0,0,0,0.3),0 0 0 0.5px rgba(184,150,78,0.15)`, overflow: 'hidden', cursor: 'pointer' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px 8px' }}>
+            <div style={{ width: 24, height: 24, borderRadius: 6, background: FC.black, border: `0.5px solid ${FC.gold}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: FC.fontDisplay, fontSize: 11, fontWeight: 700, color: FC.gold }}>FC</div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontFamily: FC.fontBody, fontSize: 12, fontWeight: 600, color: '#fff', letterSpacing: '0.2px' }}>FRESH CUTS</div>
+            </div>
+            <div style={{ fontFamily: FC.fontBody, fontSize: 11, color: 'rgba(255,255,255,0.6)' }}>now</div>
+          </div>
+          <div style={{ padding: '0 14px 14px' }}>
+            <div style={{ fontFamily: FC.fontDisplay, fontSize: 17, fontWeight: 600, color: '#fff', letterSpacing: '-0.2px', marginBottom: 4, lineHeight: 1.25 }}>New booking — Tyrell B.</div>
+            <div style={{ fontFamily: FC.fontBody, fontSize: 13.5, fontWeight: 400, color: 'rgba(255,255,255,0.85)', lineHeight: 1.4, marginBottom: 12 }}>Beard Sculpt · $25 · Today at 2:15 PM</div>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button onClick={(e) => { e.stopPropagation(); onUnlock && onUnlock(); }} style={{ flex: 1, height: 36, borderRadius: 10, background: FC.gold, color: '#fff', fontFamily: FC.fontBody, fontSize: 13, fontWeight: 600, letterSpacing: '0.3px', border: 'none', cursor: 'pointer' }}>Accept</button>
+              <button onClick={(e) => e.stopPropagation()} style={{ flex: 1, height: 36, borderRadius: 10, background: 'rgba(255,255,255,0.18)', color: '#fff', fontFamily: FC.fontBody, fontSize: 13, fontWeight: 500, border: `0.5px solid rgba(255,255,255,0.2)`, cursor: 'pointer' }}>View</button>
+            </div>
+          </div>
+        </div>
+        <div style={{ textAlign: 'center', marginTop: 6, fontFamily: FC.fontBody, fontSize: 11, fontWeight: 500, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.3px' }}>Tap to open Fresh Cuts</div>
+      </div>
+      <div style={{ position: 'absolute', bottom: 26, left: 0, right: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 80 }}>
+        {[
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 2h6l-1 4h-4L9 2zm0 5h6v3l-1.5 12h-3L9 10V7z" fill="#fff"/></svg>,
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 4l-1 2H4v14h16V6h-4l-1-2H9z" stroke="#fff" strokeWidth="1.7" strokeLinejoin="round"/><circle cx="12" cy="13" r="3.5" stroke="#fff" strokeWidth="1.7"/></svg>
+        ].map((icon, i) => (
+          <div key={i} style={{ width: 44, height: 44, borderRadius: '50%', background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{icon}</div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Schedule Screen
+// ─────────────────────────────────────────────────────────────
+function ScheduleHeader({ earned, cutsLeft }) {
+  return (
+    <div style={{ padding: '18px 20px 20px', background: FC.black, color: '#fff', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', top: 0, right: 20, bottom: 0, width: 3, background: `repeating-linear-gradient(180deg,${FC.gold} 0 10px,#fff 10px 20px,${FC.red} 20px 30px)`, opacity: 0.5 }} />
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
+        <Logo color="#fff" size={15} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'rgba(255,255,255,0.08)', border: `0.5px solid rgba(255,255,255,0.15)`, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M6 8a6 6 0 0112 0v5l2 3H4l2-3V8zM9 19a3 3 0 006 0" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            <div style={{ position: 'absolute', top: 6, right: 6, width: 7, height: 7, borderRadius: '50%', background: FC.gold, border: `1.5px solid ${FC.black}` }} />
+          </div>
+          <Avatar name={BARBER.name} size={32} gold />
+        </div>
+      </div>
+      <div style={{ fontFamily: FC.fontBody, fontSize: 11, fontWeight: 500, letterSpacing: '2px', color: FC.gold, textTransform: 'uppercase', marginBottom: 8 }}>Saturday · April 18</div>
+      <div style={{ fontFamily: FC.fontDisplay, fontSize: 34, fontWeight: 500, letterSpacing: '-0.5px', lineHeight: 1.05, color: '#fff', marginBottom: 20 }}>Good afternoon,<br/><em style={{ color: FC.goldLight, fontWeight: 500 }}>Marcus.</em></div>
+      <div style={{ display: 'flex', gap: 12 }}>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontFamily: FC.fontBody, fontSize: 10, fontWeight: 500, letterSpacing: '1.2px', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', marginBottom: 6 }}>Today's Take</div>
+          <div style={{ fontFamily: FC.fontDisplay, fontSize: 28, fontWeight: 600, color: '#fff', lineHeight: 1 }}><span style={{ fontSize: 16, color: FC.goldLight, fontWeight: 400, marginRight: 2 }}>$</span>{earned}</div>
+        </div>
+        <div style={{ width: 1, background: 'rgba(255,255,255,0.12)' }} />
+        <div style={{ flex: 1 }}>
+          <div style={{ fontFamily: FC.fontBody, fontSize: 10, fontWeight: 500, letterSpacing: '1.2px', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', marginBottom: 6 }}>Remaining</div>
+          <div style={{ fontFamily: FC.fontDisplay, fontSize: 28, fontWeight: 600, color: '#fff', lineHeight: 1 }}>{cutsLeft}<span style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 400, marginLeft: 4, fontFamily: FC.fontBody, letterSpacing: '0.5px' }}>cuts</span></div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ApptCard({ appt, onClick, isNext = false }) {
+  const statusLabel = { done:'Complete', 'in-progress':'In Chair', upcoming:'Upcoming' }[appt.status];
+  return (
+    <div onClick={onClick} style={{ display: 'flex', gap: 14, padding: '14px 20px', background: isNext ? FC.cream : 'transparent', borderLeft: isNext ? `2px solid ${FC.gold}` : '2px solid transparent', cursor: 'pointer', position: 'relative' }}>
+      <div style={{ width: 60, flexShrink: 0 }}>
+        <div style={{ fontFamily: FC.fontDisplay, fontSize: 17, fontWeight: 500, color: appt.status === 'done' ? FC.textMuted : FC.black, letterSpacing: '-0.2px', lineHeight: 1.1, textDecoration: appt.status === 'done' ? 'line-through' : 'none', textDecorationColor: FC.textMuted }}>{appt.time.replace(' AM','').replace(' PM','')}</div>
+        <div style={{ fontFamily: FC.fontBody, fontSize: 10, fontWeight: 500, color: FC.textMuted, letterSpacing: '1px', textTransform: 'uppercase', marginTop: 2 }}>{appt.time.includes('AM') ? 'AM' : 'PM'} · {appt.mins}m</div>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 4 }}>
+        <StatusDot status={appt.status} />
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+          <div style={{ fontFamily: FC.fontBody, fontSize: 15, fontWeight: 600, color: FC.black, letterSpacing: '-0.1px' }}>{appt.client}</div>
+          {appt.returning ? <span style={{ fontSize: 10, color: FC.gold, fontFamily: FC.fontBody, fontWeight: 500, letterSpacing: '0.5px' }}>· Regular</span> : <Tag color={FC.gold}>New</Tag>}
+        </div>
+        <div style={{ fontFamily: FC.fontBody, fontSize: 13, color: FC.textSecondary, marginBottom: 6 }}>{appt.service}</div>
+        {appt.note && <div style={{ fontFamily: FC.fontBody, fontSize: 12, fontStyle: 'italic', color: FC.textMuted, marginTop: 4, paddingLeft: 8, borderLeft: `1px solid ${FC.borderStrong}` }}>"{appt.note}"</div>}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 8 }}>
+          <div style={{ fontFamily: FC.fontBody, fontSize: 12, fontWeight: 600, color: appt.status === 'done' ? FC.green : FC.black }}>${appt.price}{appt.tip > 0 && <span style={{ color: FC.textMuted, fontWeight: 400 }}> +${appt.tip} tip</span>}</div>
+          <div style={{ fontFamily: FC.fontBody, fontSize: 10, fontWeight: 500, letterSpacing: '1px', textTransform: 'uppercase', color: appt.status === 'done' ? FC.green : appt.status === 'in-progress' ? FC.gold : FC.textMuted }}>· {statusLabel}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ScheduleScreen({ onSelectAppt }) {
+  const earned = TODAY.filter(a => a.status === 'done').reduce((s,a) => s+a.price+a.tip, 0);
+  const cutsLeft = TODAY.filter(a => a.status !== 'done').length;
+  const nextIdx = TODAY.findIndex(a => a.status !== 'done');
+  return (
+    <div style={{ background: FC.bg, minHeight: '100%', paddingBottom: 90 }}>
+      <ScheduleHeader earned={earned} cutsLeft={cutsLeft} />
+      <div style={{ padding: '22px 20px 10px', display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
+        <div>
+          <div style={{ fontFamily: FC.fontBody, fontSize: 10, fontWeight: 500, letterSpacing: '2px', color: FC.gold, textTransform: 'uppercase', marginBottom: 4 }}>The Chair</div>
+          <div style={{ fontFamily: FC.fontDisplay, fontSize: 22, fontWeight: 500, letterSpacing: '-0.3px', color: FC.black }}>Today's Roster</div>
+        </div>
+        <div style={{ fontFamily: FC.fontBody, fontSize: 12, fontWeight: 500, color: FC.textSecondary }}>{TODAY.length} booked</div>
+      </div>
+      <div style={{ background: '#fff', margin: '8px 16px 0', borderRadius: 18, border: `1px solid ${FC.border}`, overflow: 'hidden' }}>
+        {TODAY.map((appt,i) => (
+          <React.Fragment key={appt.id}>
+            {i > 0 && <div style={{ height: 1, background: FC.border, margin: '0 20px' }} />}
+            <ApptCard appt={appt} onClick={() => onSelectAppt && onSelectAppt(appt)} isNext={i === nextIdx} />
+          </React.Fragment>
+        ))}
+      </div>
+      <div style={{ margin: '16px 16px 0', padding: '18px 20px', background: FC.bgAlt, borderRadius: 18, border: `1px solid ${FC.border}`, display: 'flex', alignItems: 'center', gap: 14 }}>
+        <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#fff', border: `1px solid ${FC.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z" stroke={FC.gold} strokeWidth="1.6" strokeLinejoin="round"/></svg>
+        </div>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontFamily: FC.fontBody, fontSize: 13, fontWeight: 600, color: FC.black }}>Closing at 6:00 PM</div>
+          <div style={{ fontFamily: FC.fontBody, fontSize: 12, color: FC.textMuted }}>Block new bookings after last client</div>
+        </div>
+        <div style={{ width: 38, height: 22, borderRadius: 999, background: FC.gold, padding: 2, display: 'flex', alignItems: 'center' }}>
+          <div style={{ marginLeft: 'auto', width: 18, height: 18, borderRadius: '50%', background: '#fff' }} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Appointment Detail Screen
+// ─────────────────────────────────────────────────────────────
+function ApptDetailScreen({ appt, onBack }) {
+  if (!appt) return null;
+  return (
+    <div style={{ background: FC.bg, minHeight: '100%', paddingBottom: 90 }}>
+      <div style={{ padding: '18px 20px 16px', display: 'flex', alignItems: 'center', gap: 14, background: FC.black, color: '#fff', position: 'relative' }}>
+        <button onClick={onBack} style={{ width: 32, height: 32, borderRadius: '50%', background: 'rgba(255,255,255,0.08)', border: `0.5px solid rgba(255,255,255,0.15)`, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0 }}>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+        </button>
+        <div style={{ fontFamily: FC.fontBody, fontSize: 11, fontWeight: 500, letterSpacing: '2px', color: FC.gold, textTransform: 'uppercase' }}>Appointment</div>
+      </div>
+      <div style={{ background: FC.black, color: '#fff', padding: '8px 20px 32px', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ fontFamily: FC.fontDisplay, fontSize: 44, fontWeight: 500, letterSpacing: '-1px', lineHeight: 1, color: '#fff', marginBottom: 10 }}>{appt.time}</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <Avatar name={appt.client} size={42} gold />
+          <div>
+            <div style={{ fontFamily: FC.fontBody, fontSize: 17, fontWeight: 600, color: '#fff' }}>{appt.client}</div>
+            <div style={{ fontFamily: FC.fontBody, fontSize: 12, color: 'rgba(255,255,255,0.55)' }}>{appt.returning ? '12 past visits · Regular' : 'First-time client'}</div>
+          </div>
+        </div>
+      </div>
+      <div style={{ margin: '-20px 16px 0', background: '#fff', borderRadius: 18, border: `1px solid ${FC.border}`, padding: '18px 20px' }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 14 }}>
+          <div style={{ fontFamily: FC.fontDisplay, fontSize: 19, fontWeight: 500, color: FC.black, letterSpacing: '-0.2px' }}>{appt.service}</div>
+          <div style={{ fontFamily: FC.fontDisplay, fontSize: 22, fontWeight: 600, color: FC.gold }}>${appt.price}</div>
+        </div>
+        <GoldDivider width={30} />
+        <div style={{ display: 'flex', gap: 24, marginTop: 10 }}>
+          {[['Duration', appt.mins+' min'],['Chair','#2 — Marcus'],['Paid','Deposit $10']].map(([l,v],i) => (
+            <div key={i}>
+              <div style={{ fontFamily: FC.fontBody, fontSize: 10, letterSpacing: '1.5px', color: FC.textMuted, textTransform: 'uppercase', marginBottom: 3 }}>{l}</div>
+              <div style={{ fontFamily: FC.fontBody, fontSize: 14, fontWeight: 600, color: i===2 ? FC.green : FC.black }}>{v}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+      {appt.note && (
+        <div style={{ margin: '12px 16px 0', background: FC.cream, borderRadius: 18, padding: '16px 20px', border: `1px solid ${FC.border}` }}>
+          <div style={{ fontFamily: FC.fontBody, fontSize: 10, letterSpacing: '1.5px', color: FC.gold, textTransform: 'uppercase', marginBottom: 6 }}>Client Note</div>
+          <div style={{ fontFamily: FC.fontDisplay, fontSize: 16, fontStyle: 'italic', color: FC.black, lineHeight: 1.4 }}>"{appt.note}"</div>
+        </div>
+      )}
+      <div style={{ margin: '12px 16px 0', background: '#fff', borderRadius: 18, border: `1px solid ${FC.border}`, overflow: 'hidden' }}>
+        <div style={{ padding: '14px 20px 10px', borderBottom: `1px solid ${FC.border}` }}>
+          <div style={{ fontFamily: FC.fontBody, fontSize: 10, letterSpacing: '1.5px', color: FC.textMuted, textTransform: 'uppercase' }}>Recent Visits</div>
+        </div>
+        {[['Mar 21','Cut + Beard','$65','$15'],['Feb 28','Signature Cut','$45','$10'],['Feb 7','Cut + Beard','$65','$12']].map(([d,s,p,t],i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 20px', borderBottom: i < 2 ? `1px solid ${FC.border}` : 'none' }}>
+            <div style={{ fontFamily: FC.fontBody, fontSize: 12, fontWeight: 600, color: FC.textMuted, width: 56 }}>{d}</div>
+            <div style={{ flex: 1, fontFamily: FC.fontBody, fontSize: 13, color: FC.black }}>{s}</div>
+            <div style={{ fontFamily: FC.fontBody, fontSize: 13, color: FC.black, fontWeight: 500 }}>{p} <span style={{ color: FC.textMuted, fontWeight: 400 }}>+{t}</span></div>
+          </div>
+        ))}
+      </div>
+      <div style={{ margin: '20px 16px 0', display: 'flex', gap: 10 }}>
+        <button style={{ flex: 1, height: 48, borderRadius: 999, background: FC.black, color: '#fff', fontFamily: FC.fontBody, fontSize: 13, fontWeight: 600, letterSpacing: '1.5px', textTransform: 'uppercase', border: 'none', cursor: 'pointer' }}>Mark as Done</button>
+        <button style={{ width: 48, height: 48, borderRadius: '50%', background: '#fff', border: `1px solid ${FC.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 15a2 2 0 01-2 2H8l-4 4V5a2 2 0 012-2h12a2 2 0 012 2v10z" stroke={FC.black} strokeWidth="1.6" strokeLinejoin="round"/></svg>
+        </button>
+        <button style={{ width: 48, height: 48, borderRadius: '50%', background: '#fff', border: `1px solid ${FC.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3 19.5 19.5 0 01-6-6 19.8 19.8 0 01-3-8.7A2 2 0 014 2h3a2 2 0 012 1.7 13 13 0 00.7 2.8 2 2 0 01-.5 2.1L7.9 10a16 16 0 006 6l1.4-1.3a2 2 0 012.1-.5 13 13 0 002.8.7 2 2 0 011.8 2z" stroke={FC.black} strokeWidth="1.6" strokeLinejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Earnings Screen
+// ─────────────────────────────────────────────────────────────
+function EarningsScreen() {
+  const e = EARNINGS.today;
+  const total = e.service + e.tips;
+  const pct = Math.min(100, Math.round(total / e.goal * 100));
+  return (
+    <div style={{ background: FC.bg, minHeight: '100%', paddingBottom: 90 }}>
+      <div style={{ padding: '18px 20px 32px', background: FC.black, color: '#fff', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: 0, right: -40, width: 200, height: 200, background: `radial-gradient(circle,${FC.gold}22 0%,transparent 70%)`, borderRadius: '50%' }} />
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28 }}>
+          <div>
+            <div style={{ fontFamily: FC.fontBody, fontSize: 11, fontWeight: 500, letterSpacing: '2px', color: FC.gold, textTransform: 'uppercase', marginBottom: 6 }}>The Register</div>
+            <div style={{ fontFamily: FC.fontDisplay, fontSize: 24, fontWeight: 500, color: '#fff', letterSpacing: '-0.3px' }}>Earnings</div>
+          </div>
+          <div style={{ padding: '6px 12px', borderRadius: 999, background: 'rgba(255,255,255,0.08)', border: `0.5px solid rgba(255,255,255,0.15)`, fontFamily: FC.fontBody, fontSize: 11, fontWeight: 500, color: '#fff', letterSpacing: '0.5px' }}>Today ▾</div>
+        </div>
+        <div>
+          <div style={{ fontFamily: FC.fontBody, fontSize: 10, fontWeight: 500, letterSpacing: '1.5px', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', marginBottom: 4 }}>Saturday · April 18</div>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 14 }}>
+            <span style={{ fontFamily: FC.fontDisplay, fontSize: 28, fontWeight: 400, color: FC.goldLight }}>$</span>
+            <span style={{ fontFamily: FC.fontDisplay, fontSize: 76, fontWeight: 500, color: '#fff', letterSpacing: '-2.5px', lineHeight: 1 }}>{total}</span>
+            <span style={{ fontFamily: FC.fontDisplay, fontSize: 28, fontWeight: 400, color: 'rgba(255,255,255,0.5)' }}>.00</span>
+          </div>
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+              <div style={{ fontFamily: FC.fontBody, fontSize: 11, color: 'rgba(255,255,255,0.7)' }}>Daily goal</div>
+              <div style={{ fontFamily: FC.fontBody, fontSize: 11, color: FC.goldLight, fontWeight: 600 }}>{pct}% · ${e.goal - total} to go</div>
+            </div>
+            <div style={{ height: 4, background: 'rgba(255,255,255,0.12)', borderRadius: 999, overflow: 'hidden' }}>
+              <div style={{ width: pct+'%', height: '100%', background: FC.gold, borderRadius: 999 }} />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style={{ margin: '-20px 16px 0', background: '#fff', borderRadius: 18, border: `1px solid ${FC.border}`, overflow: 'hidden' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr' }}>
+          {[['Cuts',e.cuts,FC.black],['Services','$'+e.service,FC.black],['Tips','$'+e.tips,FC.gold]].map(([l,v,c],i) => (
+            <div key={l} style={{ padding: '18px 16px', borderRight: i < 2 ? `1px solid ${FC.border}` : 'none', textAlign: 'center' }}>
+              <div style={{ fontFamily: FC.fontDisplay, fontSize: 26, fontWeight: 500, color: c, letterSpacing: '-0.5px', lineHeight: 1 }}>{v}</div>
+              <div style={{ fontFamily: FC.fontBody, fontSize: 10, letterSpacing: '1.5px', color: FC.textMuted, textTransform: 'uppercase', marginTop: 6 }}>{l}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div style={{ margin: '16px 16px 0', background: '#fff', borderRadius: 18, border: `1px solid ${FC.border}`, padding: '20px' }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 18 }}>
+          <div>
+            <div style={{ fontFamily: FC.fontBody, fontSize: 10, letterSpacing: '1.5px', color: FC.gold, textTransform: 'uppercase', marginBottom: 2 }}>This Week</div>
+            <div style={{ fontFamily: FC.fontDisplay, fontSize: 24, fontWeight: 500, color: FC.black }}>${EARNINGS.week.toLocaleString()}</div>
+          </div>
+          <div style={{ textAlign: 'right' }}>
+            <div style={{ fontFamily: FC.fontBody, fontSize: 11, color: FC.green, fontWeight: 600 }}>↑ 12%</div>
+            <div style={{ fontFamily: FC.fontBody, fontSize: 10, color: FC.textMuted }}>vs last week</div>
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: 8, height: 120, alignItems: 'flex-end' }}>
+          {EARNINGS.weekTrend.map((v,i) => {
+            const max = Math.max(...EARNINGS.weekTrend);
+            const h = max > 0 ? (v/max*100) : 0;
+            const isToday = i === 5, isOff = v === 0;
+            return (
+              <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+                <div style={{ flex: 1, width: '100%', display: 'flex', alignItems: 'flex-end', position: 'relative' }}>
+                  {isToday && <div style={{ position: 'absolute', bottom: h+'%', left: '50%', transform: 'translateX(-50%) translateY(-4px)', fontFamily: FC.fontBody, fontSize: 10, fontWeight: 700, color: FC.gold, whiteSpace: 'nowrap' }}>${v}</div>}
+                  <div style={{ width: '100%', height: isOff ? 4 : h+'%', minHeight: 4, background: isToday ? FC.gold : isOff ? FC.border : FC.black, borderRadius: 3, opacity: isToday ? 1 : isOff ? 1 : 0.85 }} />
+                </div>
+                <div style={{ fontFamily: FC.fontBody, fontSize: 10, fontWeight: isToday ? 700 : 500, color: isToday ? FC.gold : FC.textMuted, letterSpacing: '1px' }}>{EARNINGS.weekDays[i]}</div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <div style={{ margin: '16px 16px 0', display: 'flex', gap: 12 }}>
+        <div style={{ flex: 1, background: FC.cream, borderRadius: 18, padding: '18px 16px', border: `1px solid ${FC.border}` }}>
+          <div style={{ fontFamily: FC.fontBody, fontSize: 10, letterSpacing: '1.5px', color: FC.textMuted, textTransform: 'uppercase', marginBottom: 6 }}>This Month</div>
+          <div style={{ fontFamily: FC.fontDisplay, fontSize: 26, fontWeight: 500, color: FC.black, letterSpacing: '-0.5px' }}>${EARNINGS.month.toLocaleString()}</div>
+          <div style={{ fontFamily: FC.fontBody, fontSize: 11, color: FC.green, fontWeight: 500, marginTop: 4 }}>↑ $1,240 vs March</div>
+        </div>
+        <div style={{ flex: 1, background: FC.black, borderRadius: 18, padding: '18px 16px', color: '#fff', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ fontFamily: FC.fontBody, fontSize: 10, letterSpacing: '1.5px', color: FC.goldLight, textTransform: 'uppercase', marginBottom: 6 }}>Available</div>
+          <div style={{ fontFamily: FC.fontDisplay, fontSize: 26, fontWeight: 500, color: '#fff', letterSpacing: '-0.5px' }}>$412</div>
+          <div style={{ fontFamily: FC.fontBody, fontSize: 11, color: FC.gold, fontWeight: 600, marginTop: 4, textDecoration: 'underline', textUnderlineOffset: 3 }}>Cash out →</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Availability Screen
+// ─────────────────────────────────────────────────────────────
+function AvailabilityScreen() {
+  const days = ['S','M','T','W','T','F','S'];
+  const dates = [12,13,14,15,16,17,18];
+  const today = 6;
+  const slots = [
+    { time:'9:00 AM', booked:true, client:'Andre J.' },
+    { time:'9:30 AM', booked:true, client:'Andre J.' },
+    { time:'10:00 AM', booked:true, client:'Devon K.' },
+    { time:'11:00 AM', booked:true, client:'Mike T.' },
+    { time:'12:00 PM', blocked:true, reason:'Lunch' },
+    { time:'12:30 PM', booked:true, client:'Jamal R.' },
+    { time:'2:15 PM', booked:true, client:'Tyrell B.' },
+    { time:'3:00 PM', booked:true, client:'Kareem S.' },
+    { time:'4:00 PM', booked:true, client:'Eli W.' },
+    { time:'5:15 PM', booked:true, client:'Andre J.' },
+  ];
+  return (
+    <div style={{ background: FC.bg, minHeight: '100%', paddingBottom: 90 }}>
+      <div style={{ padding: '20px 20px 16px', background: FC.black, color: '#fff' }}>
+        <div style={{ fontFamily: FC.fontBody, fontSize: 11, fontWeight: 500, letterSpacing: '2px', color: FC.gold, textTransform: 'uppercase', marginBottom: 6 }}>Your Chair</div>
+        <div style={{ fontFamily: FC.fontDisplay, fontSize: 28, fontWeight: 500, color: '#fff', letterSpacing: '-0.4px', marginBottom: 16 }}>Availability</div>
+        <div style={{ display: 'flex', gap: 6 }}>
+          {days.map((d,i) => {
+            const isToday = i === today;
+            return (
+              <div key={i} style={{ flex: 1, padding: '10px 0', borderRadius: 12, background: isToday ? FC.gold : 'rgba(255,255,255,0.06)', border: isToday ? 'none' : '0.5px solid rgba(255,255,255,0.1)', textAlign: 'center', cursor: 'pointer' }}>
+                <div style={{ fontFamily: FC.fontBody, fontSize: 10, fontWeight: 500, color: isToday ? 'rgba(0,0,0,0.7)' : 'rgba(255,255,255,0.6)', letterSpacing: '1px' }}>{d}</div>
+                <div style={{ fontFamily: FC.fontDisplay, fontSize: 17, fontWeight: 600, color: isToday ? '#000' : '#fff', marginTop: 2 }}>{dates[i]}</div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <div style={{ padding: '14px 16px', display: 'flex', gap: 10 }}>
+        <button style={{ flex: 1, padding: '12px 14px', borderRadius: 12, background: '#fff', border: `1px solid ${FC.border}`, display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}>
+          <div style={{ width: 28, height: 28, borderRadius: 8, background: FC.cream, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5v14" stroke={FC.gold} strokeWidth="2" strokeLinecap="round"/></svg>
+          </div>
+          <div style={{ textAlign: 'left' }}>
+            <div style={{ fontFamily: FC.fontBody, fontSize: 12, fontWeight: 600, color: FC.black }}>Block time</div>
+            <div style={{ fontFamily: FC.fontBody, fontSize: 10, color: FC.textMuted }}>Lunch, breaks, off</div>
+          </div>
+        </button>
+        <button style={{ flex: 1, padding: '12px 14px', borderRadius: 12, background: FC.black, border: 'none', color: '#fff', display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}>
+          <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(184,150,78,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke={FC.gold} strokeWidth="2" strokeLinecap="round"/></svg>
+          </div>
+          <div style={{ textAlign: 'left' }}>
+            <div style={{ fontFamily: FC.fontBody, fontSize: 12, fontWeight: 600, color: '#fff' }}>Day off</div>
+            <div style={{ fontFamily: FC.fontBody, fontSize: 10, color: 'rgba(255,255,255,0.5)' }}>Tap to close day</div>
+          </div>
+        </button>
+      </div>
+      <div style={{ margin: '4px 16px 0', background: '#fff', borderRadius: 18, border: `1px solid ${FC.border}`, overflow: 'hidden' }}>
+        <div style={{ padding: '14px 20px', borderBottom: `1px solid ${FC.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ fontFamily: FC.fontBody, fontSize: 10, letterSpacing: '1.5px', color: FC.textMuted, textTransform: 'uppercase' }}>Saturday · April 18</div>
+          <div style={{ fontFamily: FC.fontBody, fontSize: 11, color: FC.gold, fontWeight: 600 }}>8 booked · 1 blocked</div>
+        </div>
+        {slots.map((s,i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '12px 20px', borderBottom: i < slots.length-1 ? `1px solid ${FC.border}` : 'none', background: s.blocked ? FC.cream : 'transparent' }}>
+            <div style={{ width: 72, fontFamily: FC.fontBody, fontSize: 13, fontWeight: 600, color: FC.black }}>{s.time}</div>
+            <div style={{ flex: 1 }}>
+              {s.booked && <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}><div style={{ width: 5, height: 5, borderRadius: '50%', background: FC.gold }} /><div style={{ fontFamily: FC.fontBody, fontSize: 13, color: FC.black }}>{s.client}</div></div>}
+              {s.blocked && <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}><svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke={FC.textMuted} strokeWidth="2" strokeLinecap="round"/></svg><div style={{ fontFamily: FC.fontBody, fontSize: 13, color: FC.textSecondary, fontStyle: 'italic' }}>{s.reason}</div></div>}
+            </div>
+            <div style={{ fontFamily: FC.fontBody, fontSize: 10, letterSpacing: '1px', textTransform: 'uppercase', color: s.blocked ? FC.textMuted : FC.gold, fontWeight: 600 }}>{s.blocked ? 'Blocked' : 'Booked'}</div>
+          </div>
+        ))}
+      </div>
+      <div style={{ margin: '16px 16px 0', background: '#fff', borderRadius: 18, border: `1px solid ${FC.border}`, overflow: 'hidden' }}>
+        <div style={{ padding: '14px 20px', borderBottom: `1px solid ${FC.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ fontFamily: FC.fontBody, fontSize: 10, letterSpacing: '1.5px', color: FC.textMuted, textTransform: 'uppercase' }}>Default Weekly Hours</div>
+          <div style={{ fontFamily: FC.fontBody, fontSize: 11, color: FC.gold, fontWeight: 600 }}>Edit</div>
+        </div>
+        {BARBER.hours.map(([d,h],i) => (
+          <div key={d} style={{ display: 'flex', padding: '11px 20px', borderBottom: i < BARBER.hours.length-1 ? `1px solid ${FC.border}` : 'none', alignItems: 'center' }}>
+            <div style={{ fontFamily: FC.fontBody, fontSize: 13, fontWeight: 600, color: FC.black, width: 50 }}>{d}</div>
+            <div style={{ flex: 1, fontFamily: FC.fontBody, fontSize: 13, color: h==='Off' ? FC.textMuted : FC.textSecondary, fontStyle: h==='Off' ? 'italic' : 'normal' }}>{h}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Profile Screen
+// ─────────────────────────────────────────────────────────────
+function ProfileScreen() {
+  return (
+    <div style={{ background: FC.bg, minHeight: '100%', paddingBottom: 90 }}>
+      <div style={{ background: FC.black, color: '#fff', padding: '20px 20px 60px', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: -20, right: -20, width: 180, height: 180, background: `radial-gradient(circle,${FC.gold}22 0%,transparent 65%)`, borderRadius: '50%' }} />
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+          <div style={{ fontFamily: FC.fontBody, fontSize: 11, fontWeight: 500, letterSpacing: '2px', color: FC.gold, textTransform: 'uppercase' }}>The Barber</div>
+          <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'rgba(255,255,255,0.08)', border: `0.5px solid rgba(255,255,255,0.15)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 16v.01M12 8a2 2 0 012 2c0 1-2 1.5-2 3" stroke="#fff" strokeWidth="1.6" strokeLinecap="round"/><circle cx="12" cy="12" r="9" stroke="#fff" strokeWidth="1.6"/></svg>
+          </div>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 16, marginBottom: 18 }}>
+          <div style={{ width: 86, height: 108, borderRadius: 12, overflow: 'hidden', border: `1px solid ${FC.gold}40` }}>
+            <ImgPlaceholder width="100%" height="100%" label="Portrait" dark />
+          </div>
+          <div style={{ flex: 1, paddingBottom: 4 }}>
+            <div style={{ fontFamily: FC.fontDisplay, fontSize: 30, fontWeight: 500, color: '#fff', letterSpacing: '-0.5px', lineHeight: 1, marginBottom: 4 }}>Marcus <em style={{ color: FC.goldLight }}>Reed</em></div>
+            <div style={{ fontFamily: FC.fontBody, fontSize: 12, color: 'rgba(255,255,255,0.6)', marginBottom: 8 }}>{BARBER.title} · {BARBER.handle}</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill={FC.gold}><path d="M12 2l2.9 6.4 7.1.6-5.4 4.8 1.6 7L12 17.3 5.8 20.8l1.6-7L2 9l7.1-.6z"/></svg>
+                <div style={{ fontFamily: FC.fontBody, fontSize: 12, fontWeight: 600, color: '#fff' }}>{BARBER.rating}</div>
+                <div style={{ fontFamily: FC.fontBody, fontSize: 11, color: 'rgba(255,255,255,0.5)' }}>({BARBER.reviews})</div>
+              </div>
+              <div style={{ width: 1, height: 10, background: 'rgba(255,255,255,0.2)' }} />
+              <div style={{ fontFamily: FC.fontBody, fontSize: 11, color: 'rgba(255,255,255,0.6)' }}>{BARBER.yearsAt} yrs at Fresh Cuts</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style={{ margin: '-40px 16px 0', background: '#fff', borderRadius: 18, border: `1px solid ${FC.border}`, padding: '16px 20px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+          <div style={{ fontFamily: FC.fontBody, fontSize: 10, letterSpacing: '1.5px', color: FC.gold, textTransform: 'uppercase' }}>Your Bio — Public</div>
+          <div style={{ fontFamily: FC.fontBody, fontSize: 11, color: FC.textSecondary, fontWeight: 600 }}>Edit</div>
+        </div>
+        <div style={{ fontFamily: FC.fontDisplay, fontSize: 15, fontStyle: 'italic', color: FC.black, lineHeight: 1.5 }}>"{BARBER.bio}"</div>
+      </div>
+      <div style={{ margin: '16px 16px 0', background: '#fff', borderRadius: 18, border: `1px solid ${FC.border}`, overflow: 'hidden' }}>
+        <div style={{ padding: '14px 20px', borderBottom: `1px solid ${FC.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ fontFamily: FC.fontBody, fontSize: 10, letterSpacing: '1.5px', color: FC.textMuted, textTransform: 'uppercase' }}>Menu & Pricing</div>
+          <div style={{ fontFamily: FC.fontBody, fontSize: 11, color: FC.gold, fontWeight: 600 }}>+ Add</div>
+        </div>
+        {BARBER.services.map((s,i) => (
+          <div key={s.name} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 20px', borderBottom: i < BARBER.services.length-1 ? `1px solid ${FC.border}` : 'none' }}>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontFamily: FC.fontDisplay, fontSize: 15, fontWeight: 500, color: FC.black, letterSpacing: '-0.1px' }}>{s.name}</div>
+              <div style={{ fontFamily: FC.fontBody, fontSize: 11, color: FC.textMuted, marginTop: 2 }}>{s.mins} min</div>
+            </div>
+            <div style={{ fontFamily: FC.fontDisplay, fontSize: 18, fontWeight: 600, color: FC.gold }}>${s.price}</div>
+          </div>
+        ))}
+      </div>
+      <div style={{ margin: '16px 16px 0', background: '#fff', borderRadius: 18, border: `1px solid ${FC.border}`, overflow: 'hidden' }}>
+        {[['Accepting new bookings',true],['Push notifications',true],['Accept walk-ins',false],['Show on shop homepage',true]].map(([label,on],i,arr) => (
+          <div key={label} style={{ display: 'flex', alignItems: 'center', padding: '14px 20px', borderBottom: i < arr.length-1 ? `1px solid ${FC.border}` : 'none' }}>
+            <div style={{ flex: 1, fontFamily: FC.fontBody, fontSize: 14, color: FC.black }}>{label}</div>
+            <div style={{ width: 38, height: 22, borderRadius: 999, background: on ? FC.gold : FC.borderStrong, padding: 2, display: 'flex', alignItems: 'center' }}>
+              <div style={{ marginLeft: on ? 'auto' : 0, width: 18, height: 18, borderRadius: '50%', background: '#fff' }} />
+            </div>
+          </div>
+        ))}
+      </div>
+      <div style={{ margin: '16px 16px 0', padding: '14px 20px', textAlign: 'center' }}>
+        <div style={{ fontFamily: FC.fontBody, fontSize: 12, color: FC.textMuted, letterSpacing: '1px' }}>Fresh Cuts Studio · v2.4.1</div>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Interactive iOS App Shell
+// ─────────────────────────────────────────────────────────────
+function InteractiveApp() {
+  const [screen, setScreen] = React.useState(() => localStorage.getItem('fc_screen') || 'lock');
+  const [selectedAppt, setSelectedAppt] = React.useState(null);
+  React.useEffect(() => { localStorage.setItem('fc_screen', screen); }, [screen]);
+  const go = (s) => setScreen(s);
+
+  let view;
+  if (screen === 'lock') view = <LockScreen onUnlock={() => go('schedule')} />;
+  else if (screen === 'schedule') view = <ScheduleScreen onSelectAppt={(a) => { setSelectedAppt(a); go('detail'); }} />;
+  else if (screen === 'detail') view = <ApptDetailScreen appt={selectedAppt} onBack={() => go('schedule')} />;
+  else if (screen === 'earnings') view = <EarningsScreen />;
+  else if (screen === 'availability') view = <AvailabilityScreen />;
+  else if (screen === 'profile') view = <ProfileScreen />;
+
+  const showTabBar = screen !== 'lock' && screen !== 'detail';
+  const tabActive = screen === 'detail' ? 'schedule' : screen;
+
+  return (
+    <div style={{ position: 'relative' }}>
+      <IOSDevice width={390} height={844}>
+        <div style={{ minHeight: '100%', position: 'relative' }}>
+          {view}
+        </div>
+      </IOSDevice>
+      {showTabBar && (
+        <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, borderBottomLeftRadius: 48, borderBottomRightRadius: 48, overflow: 'hidden' }}>
+          <TabBar active={tabActive} onSelect={go} />
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Android mirrors
+// ─────────────────────────────────────────────────────────────
+function AndroidScheduleMirror() {
+  return (
+    <AndroidDevice width={390} height={844}>
+      <div style={{ minHeight: '100%', position: 'relative' }}>
+        <ScheduleScreen />
+        <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0 }}>
+          <TabBar active="schedule" onSelect={() => {}} />
+        </div>
+      </div>
+    </AndroidDevice>
+  );
+}
+
+function AndroidEarningsMirror() {
+  return (
+    <AndroidDevice width={390} height={844}>
+      <div style={{ minHeight: '100%', position: 'relative' }}>
+        <EarningsScreen />
+        <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0 }}>
+          <TabBar active="earnings" onSelect={() => {}} />
+        </div>
+      </div>
+    </AndroidDevice>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Static iOS wrappers
+// ─────────────────────────────────────────────────────────────
+function StaticIOS({ children, tabActive }) {
+  return (
+    <div style={{ position: 'relative' }}>
+      <IOSDevice width={390} height={844}>
+        <div style={{ minHeight: '100%', position: 'relative' }}>{children}</div>
+      </IOSDevice>
+      {tabActive && (
+        <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, borderBottomLeftRadius: 48, borderBottomRightRadius: 48, overflow: 'hidden' }}>
+          <TabBar active={tabActive} onSelect={() => {}} />
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Root App
+// ─────────────────────────────────────────────────────────────
+function App() {
+  return (
+    <DesignCanvas>
+      {/* Header */}
+      <div style={{ padding: '0 60px 48px', maxWidth: 900 }}>
+        <div style={{ fontFamily: FC.fontBody, fontSize: 11, fontWeight: 500, letterSpacing: '3px', color: FC.gold, textTransform: 'uppercase', marginBottom: 12 }}>Fresh Cuts Studio · Barber Companion</div>
+        <div style={{ fontFamily: FC.fontDisplay, fontSize: 52, fontWeight: 500, color: '#1A1A1A', letterSpacing: '-1.5px', lineHeight: 1.05, marginBottom: 14 }}>The app that lives in <em style={{ color: FC.gold }}>the barber's pocket</em>.</div>
+        <div style={{ fontFamily: FC.fontBody, fontSize: 15, color: '#5A5A5A', lineHeight: 1.6, maxWidth: 640 }}>A companion to the Fresh Cuts website. Clients book — the appointment pings Marcus directly. The whole day, the money, the chair — one tap away.</div>
+        <div style={{ marginTop: 20, fontFamily: FC.fontBody, fontSize: 12, color: FC.textMuted, fontStyle: 'italic' }}>↓ Scroll + zoom · the iOS prototype on the left is clickable — tap the notification to unlock, tap any appointment to see details, use the tab bar to navigate.</div>
+      </div>
+
+      {/* Interactive prototype */}
+      <DCSection title="Interactive prototype · iOS" subtitle="Tap the booking notification to open the app. Navigate using the tab bar. State persists on reload." gap={56}>
+        <DCArtboard label="01 · Live prototype (tap to interact)" width={390} height={844} style={{ background: 'transparent', boxShadow: 'none' }}>
+          <InteractiveApp />
+        </DCArtboard>
+        <div style={{ width: 280, flexShrink: 0, paddingTop: 40 }}>
+          <div style={{ fontFamily: FC.fontBody, fontSize: 10, letterSpacing: '1.5px', color: FC.gold, textTransform: 'uppercase', marginBottom: 8 }}>Flow</div>
+          <div style={{ fontFamily: FC.fontDisplay, fontSize: 24, fontWeight: 500, color: '#1A1A1A', letterSpacing: '-0.3px', marginBottom: 16, lineHeight: 1.2 }}>Lock screen → Today → Appointment → back</div>
+          <ul style={{ margin: 0, padding: 0, listStyle: 'none', fontFamily: FC.fontBody, fontSize: 13, color: '#5A5A5A', lineHeight: 1.6 }}>
+            {['Client books on the Fresh Cuts site — booking lands on Marcus\'s phone as a lock-screen banner.','Tap opens Today: the chair-by-chair roster with live earnings at the top.','Any row opens the appointment detail — client history, notes, actions.','Tab bar navigates to Earnings, Hours, and Profile.'].map((t,i) => (
+              <li key={i} style={{ marginBottom: 10, paddingLeft: 16, position: 'relative' }}>
+                <span style={{ position: 'absolute', left: 0, color: FC.gold }}>▸</span>{t}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </DCSection>
+
+      {/* Static iOS screens */}
+      <DCSection title="All screens · iOS" subtitle="Static artboards showing every screen of the barber app." gap={32}>
+        <StaticIOS>
+          <LockScreen onUnlock={() => {}} />
+        </StaticIOS>
+        <StaticIOS tabActive="schedule">
+          <ScheduleScreen />
+        </StaticIOS>
+        <StaticIOS>
+          <ApptDetailScreen appt={TODAY[3]} onBack={() => {}} />
+        </StaticIOS>
+        <StaticIOS tabActive="earnings">
+          <EarningsScreen />
+        </StaticIOS>
+        <StaticIOS tabActive="availability">
+          <AvailabilityScreen />
+        </StaticIOS>
+        <StaticIOS tabActive="profile">
+          <ProfileScreen />
+        </StaticIOS>
+      </DCSection>
+
+      {/* Android mirrors */}
+      <DCSection title="Android mirrors" subtitle="Material-frame views of Today and Earnings.">
+        <DCArtboard label="Today · Android" width={390} height={844} style={{ background: 'transparent', boxShadow: 'none' }}>
+          <AndroidScheduleMirror />
+        </DCArtboard>
+        <DCArtboard label="Earnings · Android" width={390} height={844} style={{ background: 'transparent', boxShadow: 'none' }}>
+          <AndroidEarningsMirror />
+        </DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+</body>
+</html>
